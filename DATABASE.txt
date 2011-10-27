@@ -1,0 +1,44 @@
+-- phpMyAdmin SQL Dump
+-- version 3.1.2deb1
+-- http://www.phpmyadmin.net
+--
+
+--
+-- Database: `polaroids`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `polaroids`
+--
+
+CREATE TABLE IF NOT EXISTS `polaroids` (
+  `name` varchar(50) NOT NULL,
+  `latin_name` text NULL,
+  `description` text NULL,
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `polaroids`
+--
+
+INSERT INTO `polaroids` (`name`, `latin_name`, `description`) VALUES
+('Another Example', NULL, NULL),
+('Beautiful', NULL, NULL),
+('Bee on a Cone', NULL, NULL),
+('Butterfly', NULL, 'So gorgeous.'),
+('Cherry Blossoms', NULL, 'Oh I love these flowers. They always herald the coming of spring.'),
+('Dahlia', NULL, 'The name means novelty'),
+('Daisies', 'Dellis hortensis', 'The name means affection.'),
+('Example Photo', NULL, NULL),
+('Heartsease', NULL, NULL),
+('Hibiscus', NULL, NULL),
+('Hydrangea', NULL, NULL),
+('Iris', NULL, 'The name means message.'),
+('More Tulips', NULL, NULL),
+('Orange Lily', 'Lilium', 'The name means majesty.'),
+('Pretty Colors', NULL, NULL),
+('Tulips', 'Tulipia', 'The name means declaration of love.'),
+('Wild Flower', NULL, NULL);
