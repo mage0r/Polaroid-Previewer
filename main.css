@@ -9,6 +9,11 @@ body {
 	background: #303030 url('images/canvas-bg.jpg') no-repeat center top;
 }
 
+a {
+	color: white;
+	text-decoration: underline;
+}
+
 #sort {
 	position: relative;
 	top: -4px;
@@ -122,6 +127,8 @@ body {
 #zoomPolaroid {
 	display: none;
 	position: absolute;
+	width: 524px;
+	height: 560px;
 }
 #footer {
 	font-size: 0.8em;

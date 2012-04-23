@@ -42,14 +42,14 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 	<div id="infoPolaroid">
 		<p><span class="title" id="email_title">Email address</span> <span class="selectableField" id="email">firstname.lastname@hitwise.com</span></p>
 	</div>
-	<canvas id="zoomPolaroid" width="500" height="500"></canvas>
+	<canvas id="zoomPolaroid"></canvas>
 	<div id="header">
 		<div id="intro">
 			<strong>Polaroid Previewer</strong>
 		</div>
 		<center>
 		<div id="sort">
-			<button id="sort-order">Order</button><button id="sort-chaos">Chaos</button>
+			<button id="sort-order">Order</button><button id="sort-chaos" class="selected">Chaos</button>
 		</div>
 		</center>
 		<div id="search">

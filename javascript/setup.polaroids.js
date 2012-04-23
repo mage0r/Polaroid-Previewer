@@ -1,15 +1,13 @@
-// canvas object
 (function($) {
+	// canvas object
 	$.fn.liquidLayout = function() {
 		this.attr({
 			width : window.innerWidth - 6,
 			height : window.innerHeight - 6
 		});
 	};
-})(jQuery);
 
-// select text object
-(function($) {
+	// select text object
 	$.fn.selectText = function() {
 	    if ($.browser.msie) {
 	        var range = document.body.createTextRange();
@@ -29,63 +27,36 @@
 	    }
 	    return this;
 	};
-})(jQuery);
-
-$(document).ready(function() {
-	$('#canvas').liquidLayout();
-	$('#canvas').polaroidStack({
-		'sources' : sources,
-		'zoomPanel' : $('#zoomPolaroid'),
-		'infoPanel' : $('#infoPolaroid'),
-		'oneClickSelect' : '.selectableField',
-		'sortOrder' : $('#sort-order'),
-		'sortChaos' : $('#sort-chaos')
+	
+	$(window).resize(function() {
+		$('#canvas').liquidLayout();
+		$('#canvas').polaroidStack('resize');
 	});
 
-	// these should probably be encapsulated in a search plugin
-	$('#search-field').attr('value','');
-	$('#search-field').bind('keyup.search', function(event) {
-		$('#canvas').polaroidStack('search', event.target.value);
-		$('#search-cancel').css('background-image','url(images/search-cancel.png)');
-		$('#search-cancel').css('cursor','pointer');
-		$('#search-cancel').bind('mouseup.searchCancel', function(event) {
-			$('#search-field').attr('value','');
-			$('#canvas').polaroidStack('showAll', event);
-			$('#search-cancel').css('background-image','url(images/search-end.png)');
-			$('#search-cancel').css('cursor','auto');
-			$('#search-cancel').unbind();
+	$(document).ready(function() {
+		$('#canvas').liquidLayout();
+		$('#canvas').polaroidStack({
+			'sources' : sources,
+			'zoomPanel' : $('#zoomPolaroid'),
+			'infoPanel' : $('#infoPolaroid'),
+			'oneClickSelect' : '.selectableField',
+			'sortOrder' : $('#sort-order'),
+			'sortChaos' : $('#sort-chaos')
+		});
+	
+		// these should probably be encapsulated in a search plugin
+		$('#search-field').attr('value','');
+		$('#search-field').bind('keyup.search', function(event) {
+			$('#canvas').polaroidStack('search', event.target.value);
+			$('#search-cancel').css('background-image','url(images/search-cancel.png)');
+			$('#search-cancel').css('cursor','pointer');
+			$('#search-cancel').bind('mouseup.searchCancel', function(event) {
+				$('#search-field').attr('value','');
+				$('#canvas').polaroidStack('showAll', event);
+				$('#search-cancel').css('background-image','url(images/search-end.png)');
+				$('#search-cancel').css('cursor','auto');
+				$('#search-cancel').unbind();
+			});
 		});
 	});
-
-	// these should probably be encapsulated in a sort plugin
-	$('#sort-chaos').addClass('selected');
-	$('#sort-order').bind('click', function(event) {
-		$('#sort-order').addClass('selected');
-		$('#sort-chaos').removeClass('selected');
-		$('#canvas').polaroidStack('sortOrder');
-	});
-	$('#sort-chaos').bind('click', function(event) {
-		$('#sort-chaos').addClass('selected');
-		$('#sort-order').removeClass('selected');
-		$('#canvas').polaroidStack('sortChaos');
-	});
-});
-
-$(window).resize(function() {
-	$('#canvas').liquidLayout();
-	$('#canvas').polaroidStack('destroy');
-	$('#canvas').polaroidStack({
-		'sources' : sources,
-		'zoomPanel' : $('#zoomPolaroid'),
-		'infoPanel' : $('#infoPolaroid'),
-		'oneClickSelect' : '.selectableField',
-		'sortOrder' : $('#sort-order'),
-		'sortChaos' : $('#sort-chaos')
-	});
-	$('#search-field').attr('value','');
-	$('#search-cancel').css('background-image','url(images/search-end.png)');
-	$('#search-cancel').css('cursor','auto');
-	$('#search-cancel').unbind();
-	$('#sort-chaos').addClass('selected');
-	$('#sort-order').removeClass('selected');
-});
+})(jQuery);
