@@ -1,20 +1,54 @@
+* {
+	font-size:100%;
+}
+
 body {
-	background: #333333;
 	margin: 0;
 	font-family: Arial, sans-serif;
-	font-size: 10pt;
+	font-size: 0.85em;
+	background: #303030 url('images/canvas-bg.jpg') no-repeat center top;
 }
-#melbourne, #kl {
-	float: left;
-	margin:5px;
-	border: 1px solid silver;
+
+#sort {
+	position: relative;
+	top: -4px;
+}
+#sort-order, #sort-chaos {
+	border: 0;
+	width: 50px;
+	height: 50px;
+	color: transparent;
+	margin: 0;
+	padding: 0;
+	background: transparent url('images/sort-button-sprite.png') no-repeat left top;
 	cursor: pointer;
-} 
-#kl {
-	margin-right: 8px;
 }
-#melbourne .selected, #kl .selected {
-	border: 3px solid silver;
+#sort-order {
+	background-position: left top;
+}
+#sort-chaos {
+	background-position: right -50px;
+}
+#sort-order.selected {
+	background-position: left -50px;
+}
+#sort-chaos.selected {
+	background-position: right top;
+}
+#sort-order.disabled, #sort-chaos.disabled, #sort-order.disabledunsel, #sort-chaos.disabledunsel {
+	cursor: auto;
+}
+#sort-order.disabled {
+	background-position: left bottom;
+}
+#sort-chaos.disabled {
+	background-position: right -100px;
+}
+#sort-order.disabledunsel {
+	background-position: left -100px;
+}
+#sort-chaos.disabledunsel {
+	background-position: right bottom;
 }
 #search-icon {
 	float: left;
@@ -25,20 +59,22 @@ body {
 #search-field {
 	float: left;
 	height: 20px;
+	width: 100px;
 	background: transparent url('images/search-bg.png') 0 0 repeat;
 	position: relative;
 	margin: 0px;
 	border: 0;
+	outline: none;
 }
 #search-cancel {
 	float: left;
 	height: 22px;
 	width: 22px;
-	background: transparent url('images/search-cancel.png') 0 0 no-repeat;
-	cursor: pointer;
+	background: transparent url('images/search-end.png') 0 0 no-repeat;
+	cursor: auto;
 }
 #header {
-	background: transparent url('images/info-bg.png') 0 0 repeat;
+	background: transparent url('images/header-bg.png') 0 0 repeat;
 	position: absolute;
 	top: 0px;
 	right: 0;
@@ -47,12 +83,14 @@ body {
 	height: 22px;
 	color: white;
 }
+#intro, #footer {
+	font-family: 'Segoe Print', 'Bradley Hand ITC TT', sans-serif;
+	position: absolute;
+}
 #intro {
 	margin: 8px;
-	position: absolute;
 	top: -1px;
 	left: 18px;
-	font-family: Segoe Print;
 }
 #search {
 	margin: 8px;
@@ -60,7 +98,9 @@ body {
 	top: 0px;
 	right: 0;
 }
-#info {
+#infoPolaroid {
+	font-size: 0.9em;
+	line-height: 1.5;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -69,15 +109,23 @@ body {
 	width: 250px;
 	height: 360px;
 	padding: 20px 20px 20px 140px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 	display: none;
 }
-#info .title {
+#infoPolaroid .title {
 	display: block;
 	float: left;
 	width: 90px;
 	font-weight: bold;
 }
-#canvas2 {
+#zoomPolaroid {
 	display: none;
 	position: absolute;
+}
+#footer {
+	font-size: 0.8em;
+	color: white;
+	bottom: 6px;
+	right: 10px;
 }

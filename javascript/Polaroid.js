@@ -19,7 +19,8 @@ var Polaroid = {
 			'zoom' : 2.5,
 			'imagedrawn' : false,
 			'usingCookies' : true,
-			'text' : 'text goes here'
+			'text' : 'text goes here',
+			'source' : null
 		};
 		this.settings.height = Math.round(this.settings.width * 1.075);
 		this.settings = $.extend(this.settings, options);
@@ -120,6 +121,24 @@ var Polaroid = {
 	},
 	rotate : function(rotate) {
 		this.settings.rotation = rotate;
+	},
+	randomPlacement : function(width, height) {
+		this.settings.coordX = Math.floor(Math.random() * (width - (180 + 20)));
+		this.settings.coordY = (Math.floor(Math.random() * (height - 250))) + 50;
+		this.rotate(Math.floor(Math.random() * 8) - 4);
+
+		// save the new location so we can return to it after another operation, eg. zoom
+		this.setStart();
+	},
+	dodge : function(elem, frame, totalFrames) {
+		//this.setStart();
+		var locateX = this.settings.newX;
+		var locateY = this.settings.newY;
+		
+		this.settings.coordX = this.easeOut(this.settings.startX, frame, totalFrames, this.settings.startX - locateX);
+		this.settings.coordY = this.easeOut(this.settings.startY, frame, totalFrames, this.settings.startY - locateY);
+
+		//this.cache(this.settings.cache.getContext('2d'));
 	},
 	// determines how much room to make for a fully zoomed in polaroid, accounting for blur and rotation
 	getZoomWidth : function(rotate) {

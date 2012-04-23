@@ -35,29 +35,57 @@ $(document).ready(function() {
 	$('#canvas').liquidLayout();
 	$('#canvas').polaroidStack({
 		'sources' : sources,
-		'zoomPanel' : $('#canvas2'),
-		'infoPanel' : $('#info'),
-		'oneClickSelect' : '.selectableField'
+		'zoomPanel' : $('#zoomPolaroid'),
+		'infoPanel' : $('#infoPolaroid'),
+		'oneClickSelect' : '.selectableField',
+		'sortOrder' : $('#sort-order'),
+		'sortChaos' : $('#sort-chaos')
 	});
 
 	// these should probably be encapsulated in a search plugin
 	$('#search-field').attr('value','');
 	$('#search-field').bind('keyup.search', function(event) {
 		$('#canvas').polaroidStack('search', event.target.value);
+		$('#search-cancel').css('background-image','url(images/search-cancel.png)');
+		$('#search-cancel').css('cursor','pointer');
+		$('#search-cancel').bind('mouseup.searchCancel', function(event) {
+			$('#search-field').attr('value','');
+			$('#canvas').polaroidStack('showAll', event);
+			$('#search-cancel').css('background-image','url(images/search-end.png)');
+			$('#search-cancel').css('cursor','auto');
+			$('#search-cancel').unbind();
+		});
 	});
-	$('#search-cancel').bind('mouseup.searchCancel', function(event) {
-		$('#search-field').attr('value','');
-		$('#canvas').polaroidStack('showAll', event);
+
+	// these should probably be encapsulated in a sort plugin
+	$('#sort-chaos').addClass('selected');
+	$('#sort-order').bind('click', function(event) {
+		$('#sort-order').addClass('selected');
+		$('#sort-chaos').removeClass('selected');
+		$('#canvas').polaroidStack('sortOrder');
+	});
+	$('#sort-chaos').bind('click', function(event) {
+		$('#sort-chaos').addClass('selected');
+		$('#sort-order').removeClass('selected');
+		$('#canvas').polaroidStack('sortChaos');
 	});
 });
+
 $(window).resize(function() {
 	$('#canvas').liquidLayout();
 	$('#canvas').polaroidStack('destroy');
 	$('#canvas').polaroidStack({
 		'sources' : sources,
-		'zoomPanel' : $('#canvas2'),
-		'infoPanel' : $('#info'),
-		'oneClickSelect' : '.selectableField'
+		'zoomPanel' : $('#zoomPolaroid'),
+		'infoPanel' : $('#infoPolaroid'),
+		'oneClickSelect' : '.selectableField',
+		'sortOrder' : $('#sort-order'),
+		'sortChaos' : $('#sort-chaos')
 	});
 	$('#search-field').attr('value','');
+	$('#search-cancel').css('background-image','url(images/search-end.png)');
+	$('#search-cancel').css('cursor','auto');
+	$('#search-cancel').unbind();
+	$('#sort-chaos').addClass('selected');
+	$('#sort-order').removeClass('selected');
 });

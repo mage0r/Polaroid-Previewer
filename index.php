@@ -16,6 +16,7 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 <head>
 	<title>Polaroid Previewer</title>
 	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0"/>
 	<link rel="stylesheet" type="text/css" href="main.css">
 	<script type="text/javascript">
 	var sources = [];
@@ -38,18 +39,25 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 			&nbsp;&nbsp;If you can't dance on the cutting edge in your spare time, when	can you?<br/><br/>
 		</div>
 	</canvas>
-	<div id="info">
+	<div id="infoPolaroid">
 		<p><span class="title" id="email_title">Email address</span> <span class="selectableField" id="email">firstname.lastname@hitwise.com</span></p>
 	</div>
-	<canvas id="canvas2" width="500" height="500"></canvas>
+	<canvas id="zoomPolaroid" width="500" height="500"></canvas>
 	<div id="header">
 		<div id="intro">
-			<strong>Polaroid Previewer</strong>&nbsp;&nbsp;
-			<small>photos courtesy of http://www.sxc.hu</small>
+			<strong>Polaroid Previewer</strong>
 		</div>
+		<center>
+		<div id="sort">
+			<button id="sort-order">Order</button><button id="sort-chaos">Chaos</button>
+		</div>
+		</center>
 		<div id="search">
 			<span id="search-icon"></span><input id="search-field" type="text"/><span id="search-cancel"></span>
 		</div>
+	</div>
+	<div id="footer">
+		photos courtesy of http://www.sxc.hu
 	</div>
 </body>
 </html>

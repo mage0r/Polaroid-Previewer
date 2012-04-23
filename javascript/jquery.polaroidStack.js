@@ -17,7 +17,9 @@ if( typeof Object.create !== 'function') {
 		'sources' : [],
 		'redrawID' : null,
 		'frameRate' : 30,
-		'showLocation' : false
+		'showLocation' : false,
+		'sort' : 'chaos',
+		'categories' : 'type'
 	};
 	var methods = {
 
@@ -39,7 +41,8 @@ if( typeof Object.create !== 'function') {
 						'text' : settings.sources[person]['name'],
 						'path' : settings.sources[person]['location'],
 						'uid' : settings.sources[person]['uid'],
-						'image' : image
+						'image' : image,
+						'source' : settings.sources[person]
 					}, this);
 			}
 
@@ -73,6 +76,9 @@ if( typeof Object.create !== 'function') {
 			// Support chaining
 			return this;
 		},
+		/*
+		 * Look throught the stack and workout if any polaroid overlaps a point on the canvas
+		 */
 		sight : function(pointX, offsetX, pointY, offsetY) {
 			for(var person = settings.polaroids.length - 1; person >= 0; person--) {
 				if(settings.polaroids[person].isVisible()) {
@@ -119,13 +125,9 @@ if( typeof Object.create !== 'function') {
 			}
 		},
 		/*
-		 * reorder the target polaroid to the top of the stack
+		 * shuffles the target polaroid to the top of the stack
 		 */
 		reorder : function(target) {
-			var temp = settings.sources[target];
-			settings.sources.push(temp);
-			settings.sources.splice(target, 1);
-			
 			var temp = settings.polaroids[target];
 			settings.polaroids.push(temp);
 			settings.polaroids.splice(target, 1);
@@ -164,6 +166,7 @@ if( typeof Object.create !== 'function') {
 				$('#'+this.id).polaroidStack('hover', event);
 			});
 			settings.target = -1;
+			settings.sort = 'chaos';
 		},
 		/*
 		 * Allows the user to move a selected polaroid around on the canvas
@@ -172,11 +175,166 @@ if( typeof Object.create !== 'function') {
 			settings.polaroids[settings.target].move(event.pageX, this[0].offsetLeft, event.pageY, this[0].offsetTop);
 		},
 		/*
+		 * Attach the sort events
+		 */
+		sortEventsEnable : function() {
+			settings.sortOrder.bind('click', function(event) {
+				settings.sortOrder.addClass('selected');
+				settings.sortChaos.removeClass('selected');
+				$('#canvas').polaroidStack('sortOrder');
+			});
+			settings.sortChaos.bind('click', function(event) {
+				settings.sortChaos.addClass('selected');
+				settings.sortOrder.removeClass('selected');
+				$('#canvas').polaroidStack('sortChaos');
+			});			
+			if(settings.sort == 'order') {
+				settings.sortOrder.removeClass('disabled');
+				settings.sortChaos.removeClass('disabledunsel');
+			}
+			else {
+				settings.sortChaos.removeClass('disabled');
+				settings.sortOrder.removeClass('disabledunsel');
+			}
+		},
+		/*
+		 * Remove the sort events without showing them as disabled
+		 */
+		sortEventsSilence : function() {
+			settings.sortOrder.unbind('click');
+			settings.sortChaos.unbind('click');
+		},
+		/*
+		 * Remove the sort events
+		 */
+		sortEventsDisable : function() {
+			settings.sortOrder.unbind('click');
+			settings.sortChaos.unbind('click');
+			if(settings.sort == 'order') {
+				settings.sortOrder.addClass('disabled');
+				settings.sortChaos.addClass('disabledunsel');
+			}
+			else {
+				settings.sortChaos.addClass('disabled');
+				settings.sortOrder.addClass('disabledunsel');
+			}
+		},
+		/*
+		 * Moves the polaroids into a logical grouping
+		 */
+		sortOrder : function(event) {
+			if(settings.sort == 'order') {
+				for(var person in settings.polaroids) {
+					settings.polaroids[person].rotate(Math.floor(Math.random() * 8) - 4);
+				}
+			}
+			else {
+				this.unbind('mousemove.hover');
+				this.unbind('mousedown.info');
+				this.polaroidStack('sortEventsSilence');
+
+				// reorder if categories are available
+				if(settings.polaroids[0].settings.source[settings.categories]) {
+					settings.polaroids.sort(function(a,b) {
+						var aName = a.settings.source[settings.categories];
+						var bName = b.settings.source[settings.categories];
+						var cName = a.settings.source['name'];
+						var dName = b.settings.source['name'];
+					
+						if(aName < bName) return -1;
+						if(aName > bName) return 1;
+						if(cName < dName) return -1;
+						if(cName > dName) return 1;
+					});
+				}
+	
+				var paddingLeft = 10;
+				var paddingTop = 50;
+				var typesCount = Math.floor(this.width()/settings.polaroids[0].settings.width);
+				var leftoverLeft = Math.floor((this.width()%(typesCount*settings.polaroids[0].settings.width))/(typesCount+1));
+				var spacing = Math.floor((this.width()-(paddingLeft*2))/typesCount);
+				var count=1;
+				var line=1;
+				for(var person in settings.polaroids) {
+					if(count%(typesCount+1) == 0) {
+						line++;
+						count=1;
+					}
+					var pointX = ((settings.polaroids[0].settings.width+leftoverLeft)*count)+(paddingLeft/2);
+					var offsetX = settings.polaroids[0].settings.width/2;
+					var pointY = (settings.polaroids[0].settings.height*line)+paddingTop;
+					var offsetY = settings.polaroids[0].settings.height/2;
+	
+					settings.polaroids[person].settings.newX = pointX - offsetX - settings.polaroids[person].settings.width / 2;
+					settings.polaroids[person].settings.newY = pointY - offsetY - settings.polaroids[person].settings.width / 2;
+	
+					count++;
+				}
+	
+				settings.sortFrame = 0;
+				settings.sortID = setInterval((function(self) {
+					return function() {
+						self.polaroidStack('sortAnimation');
+					};
+				})(this), 1000 / settings.frameRate);
+				settings.sort = 'order';
+			}
+		},
+		/*
+		 * Moves the polaroids into a random grouping
+		 */
+		sortChaos : function(event) {
+			this.unbind('mousemove.hover');
+			this.unbind('mousedown.info');
+			this.polaroidStack('sortEventsSilence');
+
+			for(var person in settings.polaroids) {
+				settings.polaroids[person].settings.newX = Math.floor(Math.random() * (this.width() - (180 + 20)));
+				settings.polaroids[person].settings.newY = (Math.floor(Math.random() * (this.height() - 250))) + 50;
+			}
+			
+			settings.sortFrame = 0;
+			settings.sortID = setInterval((function(self) {
+				return function() {
+					self.polaroidStack('sortAnimation');
+				};
+			})(this), 1000 / settings.frameRate);
+			settings.sort = 'chaos';
+		},
+		sortAnimation : function() {
+			var totalSortFrames = 30;
+
+			if(settings.sortFrame <= totalSortFrames) {
+				for(var person in settings.polaroids) {
+					settings.polaroids[person].dodge(this, settings.sortFrame, totalSortFrames);
+				}
+				settings.sortFrame++;
+			}
+			else {
+				for(var person in settings.polaroids) {
+					settings.polaroids[person].setStart();
+					settings.polaroids[person].setCache();
+				}
+
+				window.clearInterval(settings.sortID);
+				settings.sortID = null;
+				settings.sortFrame = 0;
+				settings.target = -1;
+				this.bind('mousemove.hover', function(event) {
+					$('#'+this.id).polaroidStack('hover', event);
+				});
+
+				this.polaroidStack('sortEventsEnable');
+			}
+		},
+		/*
 		 * Handles the zoom in to see the polaroid better
 		 */
 		info : function(event) {
 			this.unbind('mousemove.hover');
 			this.unbind('mousedown.info');
+			this.polaroidStack('sortEventsDisable');
+
 			settings.target = this.polaroidStack('reorder', settings.target);
 			
 			settings.zoomFrame = 0;
@@ -201,10 +359,10 @@ if( typeof Object.create !== 'function') {
 				// setup the zoomed polaroid inside its own canvas - helps with the layering
 				// info panel allows the contents to be selectable, add a form, anything
 				var ctx = settings.zoomPanel[0].getContext('2d');
-				ctx.clearRect(0, 0, $('#canvas2').width(), $('#canvas2').height());
+				ctx.clearRect(0, 0, settings.zoomPanel.width(), settings.zoomPanel.height());
 				settings.polaroids[settings.target].drawAt(false, ctx, settings.zoomPanel.width() / 2, settings.zoomPanel.height() / 2);
 				settings.polaroids[settings.target].display(false);
-				this.polaroidStack('updateInfo', settings.sources[settings.target]);
+				this.polaroidStack('updateInfo', settings.polaroids[settings.target].settings.source);
 				$(settings.oneClickSelect).bind('click', function(e) {
    					$(this).selectText();
 				});
@@ -223,7 +381,7 @@ if( typeof Object.create !== 'function') {
 			var contents = '';
 			for(var output in target) {
 				if(settings.showLocation || (!settings.showLocation && output != 'location')) {
-					contents += "<p><span class=\"title\" id=\""+output+"_title\">"+output.substr(0,1).toUpperCase()+output.substr(1,output.length)+"</span> <span id=\""+output+"\" class=\"selectableField\">"+target[output]+"</span></p>";
+					contents += "<p><span class=\"title\" id=\""+output+"_title\">"+output.substr(0,1).toUpperCase()+output.substr(1,output.length).replace('_',' ')+"</span> <span id=\""+output+"\" class=\"selectableField\">"+target[output]+"</span></p>";
 				}
 			}
 			settings.infoPanel.html(contents);
@@ -267,15 +425,16 @@ if( typeof Object.create !== 'function') {
 				this.bind('mousemove.hover', function(event) {
 					$('#'+this.id).polaroidStack('hover', event);
 				});
+				this.polaroidStack('sortEventsEnable');
 			}
 		},
 		search : function(string) {
 			this.polaroidStack('showAll');
 			if(string.length > 0) {
-				for(var person in settings.sources) {
+				for(var person in settings.polaroids) {
 					var checkPerson = false;
-					for(var detail in settings.sources[person]) {
-						if(settings.sources[person][detail].toLowerCase().match(string.toLowerCase())) {
+					for(var detail in settings.polaroids[person].settings.source) {
+						if(settings.polaroids[person].settings.source[detail].toLowerCase().match(string.toLowerCase())) {
 							checkPerson = true;
 						}
 					}
@@ -311,15 +470,20 @@ if( typeof Object.create !== 'function') {
 			window.clearInterval(settings.redrawID);
 			window.clearInterval(settings.zoomID);
 
-			$(settings.oneClickSelect).unbind('click');
 			for(var person in settings.polaroids) {
 				settings.polaroids[person].destroy();
 				delete settings.polaroids[person];
 			}
+			for(var person in settings.source) {
+				delete settings.sources[person];
+			}
 			for(var set in settings) {
 				delete settings[set];
 			}
+			$(settings.oneClickSelect).unbind();
 			this.unbind();
+
+			delete this;
 		}
 	};
 
