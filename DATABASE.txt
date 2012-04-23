@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 3.1.2deb1
+-- version 3.4.5deb1
 -- http://www.phpmyadmin.net
 --
 
@@ -15,8 +15,9 @@
 
 CREATE TABLE IF NOT EXISTS `polaroids` (
   `name` varchar(50) NOT NULL,
-  `latin_name` text NULL,
-  `description` text NULL,
+  `type` varchar(20) DEFAULT NULL,
+  `latin_name` text,
+  `description` text,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -24,21 +25,21 @@ CREATE TABLE IF NOT EXISTS `polaroids` (
 -- Dumping data for table `polaroids`
 --
 
-INSERT INTO `polaroids` (`name`, `latin_name`, `description`) VALUES
-('Another Example', NULL, NULL),
-('Beautiful', NULL, NULL),
-('Bee on a Cone', NULL, NULL),
-('Butterfly', NULL, 'So gorgeous.'),
-('Cherry Blossoms', NULL, 'Oh I love these flowers. They always herald the coming of spring.'),
-('Dahlia', NULL, 'The name means novelty'),
-('Daisies', 'Dellis hortensis', 'The name means affection.'),
-('Example Photo', NULL, NULL),
-('Heartsease', NULL, NULL),
-('Hibiscus', NULL, NULL),
-('Hydrangea', NULL, NULL),
-('Iris', NULL, 'The name means message.'),
-('More Tulips', NULL, NULL),
-('Orange Lily', 'Lilium', 'The name means majesty.'),
-('Pretty Colors', NULL, NULL),
-('Tulips', 'Tulipia', 'The name means declaration of love.'),
-('Wild Flower', NULL, NULL);
+INSERT INTO `polaroids` (`name`, `type`, `latin_name`, `description`) VALUES
+('Another Example', 'orange', NULL, NULL),
+('Beautiful', 'yellow', NULL, NULL),
+('Bee on a Cone', 'pink', NULL, NULL),
+('Butterfly', 'orange', NULL, 'So gorgeous.'),
+('Cherry Blossoms', 'pink', NULL, 'Oh I love these flowers. They always herald the coming of spring.'),
+('Dahlia', 'red', NULL, 'The name means novelty'),
+('Daisies', 'purple', 'Dellis hortensis', 'The name means affection.'),
+('Example Photo', 'pink', NULL, NULL),
+('Heartsease', 'yellow', NULL, NULL),
+('Hibiscus', 'red', NULL, NULL),
+('Hydrangea', 'blue', NULL, NULL),
+('Iris', 'purple', NULL, 'The name means message.'),
+('More Tulips', 'pink', NULL, NULL),
+('Orange Lily', 'orange', 'Lilium', 'The name means majesty.'),
+('Pretty Colors', 'orange', NULL, NULL),
+('Tulips', 'red', 'Tulipia', 'The name means declaration of love.'),
+('Wild Flower', 'blue', NULL, NULL);
