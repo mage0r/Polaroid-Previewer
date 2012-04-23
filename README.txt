@@ -38,5 +38,12 @@ Set the username/password/database here: model\DBAuth.php
 == LAYOUT: NOT SO RANDOM ==
 The layout of the polaroids is random on first view. If you move or reorder any them then it caches the new location of those polaroids so they'll stay put next page load. Handy if you're trying to sort through the photos.
 
+== SORTING ==
+There's now two sorts: order and chaos. Chaos will randomly push the polaroids around whereas order will put them in their designated spaces based on a sort.
+
+The ordered sort is first based on alphabetical sort of categories if one is set at init, for example the demo has a 'type' column in the database and 'type' is defined as the category. After categories the polaroids are then sorted by name. 
+
+I would like it to be much smarter about fitting all the polaroids on screen. Currently if there are too many polaroids they will disappear off screen. Ideally they either overlap until they all fit or the canvas grows in size to accommodate thus causing a page scroll (probably the better option for mobile).
+
 == IDEA: TAGGING ==
 The search feature is designed to be very flexible, it does a string search on all available fields. So it may be quite handy to implement searchable tags on photos.
