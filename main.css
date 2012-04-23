@@ -16,7 +16,7 @@ a {
 
 #sort {
 	position: relative;
-	top: -4px;
+	top: -11px;
 }
 #sort-order, #sort-chaos {
 	border: 0;
@@ -44,7 +44,7 @@ a {
 	cursor: auto;
 }
 #sort-order.disabled {
-	background-position: left bottom;
+	background-position: left -150px;
 }
 #sort-chaos.disabled {
 	background-position: right -100px;
@@ -53,7 +53,7 @@ a {
 	background-position: left -100px;
 }
 #sort-chaos.disabledunsel {
-	background-position: right bottom;
+	background-position: right -150px;
 }
 #search-icon {
 	float: left;
