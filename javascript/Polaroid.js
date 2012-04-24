@@ -122,21 +122,12 @@ var Polaroid = {
 	rotate : function(rotate) {
 		this.settings.rotation = rotate;
 	},
-	randomPlacement : function(width, height) {
-		this.settings.coordX = Math.floor(Math.random() * (width - (180 + 20)));
-		this.settings.coordY = (Math.floor(Math.random() * (height - 250))) + 50;
-		this.rotate(Math.floor(Math.random() * 8) - 4);
-
-		// save the new location so we can return to it after another operation, eg. zoom
-		this.setStart();
-	},
 	dodge : function(elem, frame, totalFrames) {
-		//this.setStart();
 		var locateX = this.settings.newX;
 		var locateY = this.settings.newY;
 		
-		this.settings.coordX = this.easeOut(this.settings.startX, frame, totalFrames, this.settings.startX - locateX);
-		this.settings.coordY = this.easeOut(this.settings.startY, frame, totalFrames, this.settings.startY - locateY);
+		this.settings.coordX = this.easeOut(this.settings.coordX, frame, totalFrames*3, this.settings.coordX - locateX);
+		this.settings.coordY = this.easeOut(this.settings.coordY, frame, totalFrames*3, this.settings.coordY - locateY);
 
 		//this.cache(this.settings.cache.getContext('2d'));
 	},

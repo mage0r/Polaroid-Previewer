@@ -326,7 +326,7 @@ if( typeof Object.create !== 'function') {
 			settings.sort = 'chaos';
 		},
 		sortAnimation : function() {
-			var totalSortFrames = 30;
+			var totalSortFrames = 10;
 
 			if(settings.sortFrame <= totalSortFrames) {
 				for(var person in settings.polaroids) {
