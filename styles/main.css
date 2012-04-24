@@ -135,5 +135,8 @@ a {
 	font-size: 0.8em;
 	color: white;
 	float: right;
-	margin: -20px 10px 0 10px;
+	position: relative;
+	top: -20px;
+	right: 10px;
+	margin-bottom: -20px;
 }

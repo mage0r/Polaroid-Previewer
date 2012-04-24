@@ -58,7 +58,7 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 		</div>
 	</div>
 	<div id="footer">
-		photos courtesy of <a href="http://www.sxc.hu/">http://www.sxc.hu/</a>
+		A <a href="http://github.com/chixor/Polaroid-Previewer">GitHub</a> project. Photos courtesy of <a href="http://www.sxc.hu/">http://www.sxc.hu/</a>
 	</div>
 </body>
 </html>
