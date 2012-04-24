@@ -125,11 +125,11 @@ var Polaroid = {
 	dodge : function(elem, frame, totalFrames) {
 		var locateX = this.settings.newX;
 		var locateY = this.settings.newY;
+		var locateR = this.settings.newR;
 		
 		this.settings.coordX = this.easeOut(this.settings.coordX, frame, totalFrames*3, this.settings.coordX - locateX);
 		this.settings.coordY = this.easeOut(this.settings.coordY, frame, totalFrames*3, this.settings.coordY - locateY);
-
-		//this.cache(this.settings.cache.getContext('2d'));
+		this.settings.rotation = this.easeOut(this.settings.rotation, frame, totalFrames*3, this.settings.rotation - locateR);
 	},
 	// determines how much room to make for a fully zoomed in polaroid, accounting for blur and rotation
 	getZoomWidth : function(rotate) {

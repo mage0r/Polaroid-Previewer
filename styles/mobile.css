@@ -1,0 +1,15 @@
+input {
+    -webkit-appearance: none;
+    border-radius: 0;
+    padding: 1px;
+}
+
+#intro {
+	display:none;
+}
+
+#sort {
+	position: absolute;
+	top: -3px;
+	left: 10px;
+}

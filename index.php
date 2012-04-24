@@ -17,7 +17,8 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 	<title>Polaroid Previewer</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0"/>
-	<link rel="stylesheet" type="text/css" href="main.css">
+	<link rel="stylesheet" href="styles/reset.css" type="text/css"/>
+	<link rel="stylesheet" href="styles/core.css" media="screen"/> 
 	<script type="text/javascript">
 	var sources = [];
 	<?=$polaroids->drawJavascriptObjects();?>
@@ -57,7 +58,7 @@ $polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'po
 		</div>
 	</div>
 	<div id="footer">
-		photos courtesy of http://www.sxc.hu
+		photos courtesy of <a href="http://www.sxc.hu/">http://www.sxc.hu/</a>
 	</div>
 </body>
 </html>
