@@ -4,26 +4,29 @@
 
 var Polaroid = {
 	// init method
-	init : function(options, elem) {
+	init : function(options, width, height) {
 		this.settings = {
-			'coordX' : Math.floor(Math.random() * (elem.width() - (180 + 20))),
-			'coordY' : (Math.floor(Math.random() * (elem.height() - 250))) + 50,
+			'coordX' : Math.floor(Math.random() * (width - (180 + 20))),
+			'coordY' : (Math.floor(Math.random() * (height - 250))) + 50,
 			'rotation' : Math.floor(Math.random() * 8) - 4,
 			// original w:160, h:172
 			'width' : 180,
 			'height' : 194,
 			'image' : null,
-			'path' : 'images',
+			'fileFormat' : 'jpg',
 			'display' : true,
 			'fade' : 1,
 			'zoom' : 2.5,
 			'imagedrawn' : false,
 			'usingCookies' : true,
-			'text' : 'text goes here',
 			'source' : null
 		};
-		this.settings.height = Math.round(this.settings.width * 1.075);
 		this.settings = $.extend(this.settings, options);
+		this.settings.height = Math.round(this.settings.width * 1.075);
+
+		// start downloading the photo for this polaroid
+		this.settings.image = new Image();
+		this.settings.image.src = this.settings.source.location + '/' + this.settings.source.name + '.' + this.settings.fileFormat;
 
 		// If cookies have been set, retrieve them
 		if(this.getCookie('x')) {
@@ -52,15 +55,23 @@ var Polaroid = {
 	isVisible : function() {
 		return this.settings.display;
 	},
+	setZoomed : function(state) {
+		this.settings.zoomed = state;
+	},
+	isZoomed : function(state) {
+		return this.settings.zoomed;
+	},
 	// check if we've rendered at this point
 	isTarget : function(pointX, offsetX, pointY, offsetY) {
-		if(pointX < this.settings.coordX + this.settings.width + offsetX 
-		&& pointX > this.settings.coordX + offsetX 
-		&& pointY < this.settings.coordY + this.settings.height + offsetY 
-		&& pointY > this.settings.coordY + offsetY) {
-			return true;
+		if(this.isVisible()) {
+			if(pointX < this.settings.coordX + this.settings.width + offsetX 
+			&& pointX > this.settings.coordX + offsetX 
+			&& pointY < this.settings.coordY + this.settings.height + offsetY 
+			&& pointY > this.settings.coordY + offsetY) {
+				return true;
+			}
+			return false;
 		}
-		return false;
 	},
 	// check if the info button is rendered at this point
 	isInfo : function(pointX, offsetX, pointY, offsetY) {
@@ -80,10 +91,26 @@ var Polaroid = {
 		this.settings.startX = this.settings.coordX;
 		this.settings.startY = this.settings.coordY;
 	},
+	// define a new random location for this polaroid to finish an animation at
+	setNewRandomCoords : function(maxRight, maxBottom) {
+		this.settings.finishX = Math.floor(Math.random() * (maxRight - (180 + 20)));
+		this.settings.finishY = (Math.floor(Math.random() * (maxBottom - 250))) + 50;
+		this.setNewRotation();
+	},
+	// define a new allocated location for this polaroid to finish an animation at
+	setNewAllocCoords : function(pointX, pointY) {
+		this.settings.finishX = pointX - (this.settings.width/2) - (this.settings.width/2);
+		this.settings.finishY = pointY - (this.settings.height/2) - (this.settings.height/2);
+		this.setNewRotation();
+	},
+	// define a new rotation for this polaroid to finish an animation at
+	setNewRotation : function() {
+		this.settings.finishR = this.rotateRandom();
+	},
 	// prepare the cache canvas - we get a huge performance improvement by caching the polaroid render
 	setCache : function() {
-		$('body').append('<canvas id="polaroidObject-'+this.settings.path+'-'+this.settings.text+'" width="'+(this.settings.width+10)+'" height="'+(this.settings.height+10)+'" style="display:none;"></canvas>');
-		this.settings.cache = document.getElementById('polaroidObject-'+this.settings.path+'-'+this.settings.text);
+		$('body').append('<canvas id="polaroidObject-'+this.settings.source.location+'-'+this.settings.source.name+'" width="'+(this.settings.width+10)+'" height="'+(this.settings.height+10)+'" style="display:none;"></canvas>');
+		this.settings.cache = document.getElementById('polaroidObject-'+this.settings.source.location+'-'+this.settings.source.name);
 
 		// initialize canvas object in IE browsers
 		if (window.G_vmlCanvasManager) {
@@ -96,18 +123,35 @@ var Polaroid = {
 	// cookie the x:y location so visitors don't have to keep reorganising polaroids every visit
 	setCookies : function() {
 		if(this.settings.usingCookies) {
-			$.cookie(this.settings.text+'#x', this.settings.coordX, {expires: 7});
-			$.cookie(this.settings.text+'#y', this.settings.coordY, {expires: 7});
+			$.cookie(this.settings.source.name+'#x', this.settings.coordX, {expires: 7});
+			$.cookie(this.settings.source.name+'#y', this.settings.coordY, {expires: 7});
 		}
 		return true;
 	},
 	getCookie : function(which) {
-		if(this.settings.usingCookies && ($.cookie(this.settings.text+'#'+which) != null)) {
-			return $.cookie(this.settings.text+'#'+which);
+		if(this.settings.usingCookies && ($.cookie(this.settings.source.name+'#'+which) != null)) {
+			return $.cookie(this.settings.source.name+'#'+which);
 		}
 		else {
 			return false;
 		}
+	},
+	getInfo : function(which) {
+		if(this.settings.source[which] != null) {
+			return this.settings.source[which];
+		}
+		else if(which) {
+			return false;
+		}
+		return this.settings.source;
+	},
+	searchInfo : function(string) {
+		for(var detail in this.settings.source) {
+			if(this.settings.source[detail].toLowerCase().match(string)) {
+				return true;
+			}
+		}
+		return false;
 	},
 	display : function(display) {
 		this.settings.display = display;
@@ -119,17 +163,18 @@ var Polaroid = {
 		// save the new location so we can return to it after another operation, eg. zoom
 		this.setStart();
 	},
-	rotate : function(rotate) {
-		this.settings.rotation = rotate;
+	rotate : function() {
+		this.settings.rotation = this.rotateRandom();
 	},
-	dodge : function(elem, frame, totalFrames) {
-		var locateX = this.settings.newX;
-		var locateY = this.settings.newY;
-		var locateR = this.settings.newR;
-		
-		this.settings.coordX = this.easeOut(this.settings.coordX, frame, totalFrames*3, this.settings.coordX - locateX);
-		this.settings.coordY = this.easeOut(this.settings.coordY, frame, totalFrames*3, this.settings.coordY - locateY);
-		this.settings.rotation = this.easeOut(this.settings.rotation, frame, totalFrames*3, this.settings.rotation - locateR);
+	rotateRandom : function() {
+		return Math.floor(Math.random() * 8) - 4;
+	},
+	dodge : function(frame, totalFrames) {
+		if(!this.isZoomed()) {
+			this.settings.coordX = this.easeOut(this.settings.coordX, frame, totalFrames*3, this.settings.coordX - this.settings.finishX);
+			this.settings.coordY = this.easeOut(this.settings.coordY, frame, totalFrames*3, this.settings.coordY - this.settings.finishY);
+			this.settings.rotation = this.easeOut(this.settings.rotation, frame, totalFrames*3, this.settings.rotation - this.settings.finishR);
+		}
 	},
 	// determines how much room to make for a fully zoomed in polaroid, accounting for blur and rotation
 	getZoomWidth : function(rotate) {
@@ -139,36 +184,26 @@ var Polaroid = {
 	getZoomHeight : function(rotate) {
 		return Math.round((this.settings.height * this.settings.zoom) + (this.settings.height * this.settings.zoom * 0.15));
 	},
-	zoomIn : function(elem, frame, totalFrames) {
-		var locateX = elem.width() / 3.2 - (this.settings.startWidth * this.settings.zoom / 2);
-		var locateY = elem.height() / 2 - (this.settings.startHeight * this.settings.zoom / 2);
-
+	zoomIn : function(locateX, locateY, frame, totalFrames) {
 		this.settings.width = this.easeIn(this.settings.startWidth, frame, totalFrames, this.settings.startWidth * this.settings.zoom - this.settings.startWidth);
 		this.settings.height = this.easeIn(this.settings.startHeight, frame, totalFrames, this.settings.startHeight * this.settings.zoom - this.settings.startHeight);
 		this.settings.coordX = this.easeOut(this.settings.startX, frame, totalFrames, this.settings.startX - locateX);
 		this.settings.coordY = this.easeOut(this.settings.startY, frame, totalFrames, this.settings.startY - locateY);
+		this.zoomClean();
+	},
+	zoomOut : function(locateX, locateY, frame, totalFrames) {
+		this.settings.width = this.easeOut(this.settings.startWidth * this.settings.zoom, frame, totalFrames, this.settings.startWidth * this.settings.zoom - this.settings.startWidth);
+		this.settings.height = this.easeOut(this.settings.startHeight * this.settings.zoom, frame, totalFrames, this.settings.startHeight * this.settings.zoom - this.settings.startHeight);
+		this.settings.coordX = this.easeIn(locateX, frame, totalFrames, this.settings.startX - locateX);
+		this.settings.coordY = this.easeIn(locateY, frame, totalFrames, this.settings.startY - locateY);
+		this.zoomClean();
+	},
+	zoomClean : function() {
 		this.settings.cache.setAttribute('width',Math.round(this.settings.width + (this.settings.width * 0.0625)));
 		this.settings.cache.setAttribute('height',Math.round(this.settings.height + (this.settings.width * 0.0625)));
 
 		// recalculate padding ratio
 		this.ratios.padding = Math.round((this.settings.width - (this.settings.width * this.ratios.width)) / 2);
-
-		this.cache(this.settings.cache.getContext('2d'));
-	},
-	zoomOut : function(elem, frame, totalFrames) {
-		var locateX = elem.width() / 3.2 - (this.settings.startWidth * this.settings.zoom / 2);
-		var locateY = elem.height() / 2 - (this.settings.startHeight * this.settings.zoom / 2);
-
-		this.settings.width = this.easeOut(this.settings.startWidth * this.settings.zoom, frame, totalFrames, this.settings.startWidth * this.settings.zoom - this.settings.startWidth);
-		this.settings.height = this.easeOut(this.settings.startHeight * this.settings.zoom, frame, totalFrames, this.settings.startHeight * this.settings.zoom - this.settings.startHeight);
-		this.settings.coordX = this.easeIn(locateX, frame, totalFrames, this.settings.startX - locateX);
-		this.settings.coordY = this.easeIn(locateY, frame, totalFrames, this.settings.startY - locateY);
-		this.settings.cache.setAttribute('width',this.settings.width + (this.settings.width * 0.0625));
-		this.settings.cache.setAttribute('height',this.settings.height + (this.settings.width * 0.0625));
-
-		// recalculate padding ratio
-		this.ratios.padding = Math.round((this.settings.width - (this.settings.width * this.ratios.width)) / 2);
-
 		this.cache(this.settings.cache.getContext('2d'));
 	},
 	easeIn : function(offset, thisInterval, totalIntervals, totalDifference) {
@@ -176,12 +211,6 @@ var Polaroid = {
 	},
 	easeOut : function(offset, thisInterval, totalIntervals, totalDifference) {
 		return offset - Math.sqrt(thisInterval / totalIntervals) * totalDifference;
-	},
-	strmatch : function(string) {
-		if(!this.settings.text.toLowerCase().match(string.toLowerCase()) && !this.settings.path.toLowerCase().match(string.toLowerCase())) {
-			return false;
-		}
-		return true;
 	},
 	// render the polaroid, override the x,y coords - this is good for rendering on a secondary canvas eg 'info'
 	drawAt : function(target, ctx, x, y) {
@@ -197,7 +226,14 @@ var Polaroid = {
 	},
 	// render changes and translations to the polaroid - usually done on the primary canvas
 	draw : function(target, ctx) {
+		if(this.isZoomed()) {
+			return;
+		}
+		
 		ctx.save();
+		if(!this.isVisible()) {
+			ctx.globalAlpha = 0.1;
+		}
 		ctx.translate(this.settings.coordX + this.settings.width / 2, this.settings.coordY + this.settings.height / 2);
 		ctx.rotate(Math.PI / 180 * this.settings.rotation);
 		ctx.translate(-this.settings.width / 2, -this.settings.height / 2);
@@ -272,7 +308,7 @@ var Polaroid = {
 		// Create the annotation - calibri font might be more cross platform compatible
 		ctx.font = (this.settings.width * this.ratios.textSize) + "pt Segoe Print";
 		ctx.fillStyle = "#2d2dd4";
-		ctx.fillText(this.settings.text, this.ratios.padding, Math.round(this.settings.height * this.ratios.textToHeight));
+		ctx.fillText(this.settings.source.name, this.ratios.padding, Math.round(this.settings.height * this.ratios.textToHeight));
 
 		ctx.restore();
 	},

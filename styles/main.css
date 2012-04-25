@@ -1,12 +1,9 @@
-* {
-	font-size:100%;
-}
-
 body {
 	margin: 0;
 	font-family: Arial, sans-serif;
 	font-size: 0.85em;
 	background: #303030 url('../images/canvas-bg.jpg') no-repeat center top;
+	color: white;
 }
 
 a {
@@ -14,6 +11,40 @@ a {
 	text-decoration: underline;
 }
 
+/* page styles */
+
+#header {
+	background: transparent url('../images/header-bg.png') 0 0 repeat;
+	position: absolute;
+	top: 0px;
+	right: 0;
+	padding: 8px;
+	width:100%;
+	height: 22px;
+}
+#intro, #footer, #polaroidStack-polaroidInfo .title {
+	font-family: 'Segoe Print', 'Bradley Hand ITC TT';
+}
+#intro {
+	position: absolute;
+	margin: 11px;
+	top: 0px;
+	left: 15px;
+}
+#footer {
+	font-size: 0.8em;
+	float: right;
+	position: relative;
+	top: -20px;
+	right: 10px;
+	margin-bottom: -20px;
+}
+
+/* sort button styles */
+
+#sort, #sort-order, #sort-chaos {
+	font-size: 0em;
+}
 #sort {
 	position: relative;
 	top: -11px;
@@ -22,12 +53,10 @@ a {
 	border: 0;
 	width: 50px;
 	height: 50px;
-	color: transparent;
-	margin: 0;
-	padding: 0;
-	outline: 0;
-	background: transparent url('../images/sort-button-sprite.png') no-repeat left top;
+	background: transparent url('../images/sort-sprite.png') no-repeat left top;
 	cursor: pointer;
+	/* remove IE dotted outline on focus */
+	outline: 0;
 }
 #sort-order {
 	background-position: left top;
@@ -56,11 +85,22 @@ a {
 #sort-chaos.disabledunsel {
 	background-position: right -150px;
 }
+
+/* search buttons & field styles */
+
+#search {
+	margin: 8px;
+	position: absolute;
+	top: 0px;
+	right: 0;
+}
+#search-icon, #search-cancel, #search-cancel.hidden {
+	background: transparent url('../images/search-sprite.png') no-repeat left top;
+}
 #search-icon {
 	float: left;
 	height: 22px;
 	width: 25px;
-	background: transparent url('../images/search-icon.png') 0 0 no-repeat;
 }
 #search-field {
 	float: left;
@@ -70,73 +110,44 @@ a {
 	position: relative;
 	margin: 0px;
 	border: 0;
+	/* remove IE dotted outline on focus */
 	outline: none;
 }
 #search-cancel {
 	float: left;
 	height: 22px;
 	width: 22px;
-	background: transparent url('../images/search-end.png') 0 0 no-repeat;
+	cursor: pointer;
+	background-position: right bottom;
+}
+#search-cancel.disabled{
+	background-position: right -22px;
 	cursor: auto;
 }
-#header {
-	background: transparent url('../images/header-bg.png') 0 0 repeat;
+
+/* polaroid info styles */
+	
+#polaroidStack-polaroidInfo, #polaroidStack-polaroidZoom {
 	position: absolute;
-	top: 0px;
-	right: 0;
-	padding: 8px;
-	width:100%;
-	height: 22px;
-	color: white;
+	display: none;
 }
-#intro, #footer {
-	font-family: 'Segoe Print', 'Bradley Hand ITC TT', sans-serif;
-}
-#intro {
-	position: absolute;
-	margin: 11px;
-	top: 0px;
-	left: 15px;
-}
-#search {
-	margin: 8px;
-	position: absolute;
-	top: 0px;
-	right: 0;
-}
-#infoPolaroid {
+#polaroidStack-polaroidInfo {
 	font-size: 0.9em;
 	line-height: 1.5;
-	position: absolute;
-	top: 0;
-	left: 0;
 	background: transparent url('../images/info-bg.png') 0 0 repeat;
-	color: white;
-	width: 250px;
+	width: 300px;
 	height: 360px;
 	padding: 20px 20px 20px 140px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	display: none;
 }
-#infoPolaroid .title {
+#polaroidStack-polaroidInfo .title {
 	display: block;
 	float: left;
 	width: 90px;
 	font-weight: bold;
 }
-#zoomPolaroid {
-	display: none;
-	position: absolute;
+#polaroidStack-polaroidZoom {
 	width: 524px;
 	height: 560px;
-}
-#footer {
-	font-size: 0.8em;
-	color: white;
-	float: right;
-	position: relative;
-	top: -20px;
-	right: 10px;
-	margin-bottom: -20px;
 }

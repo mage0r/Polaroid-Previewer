@@ -1,15 +1,18 @@
-input {
-    -webkit-appearance: none;
-    border-radius: 0;
-    padding: 1px;
-}
-
+/* remove the intro text, it takes too much space */
 #intro {
 	display:none;
 }
 
+/* move the sort buttons to the far left */
 #sort {
 	position: absolute;
 	top: -3px;
 	left: 10px;
+}
+
+/* remove unique browser styles on the search field */
+input {
+    -webkit-appearance: none;
+    border-radius: 0;
+    padding: 1px;
 }

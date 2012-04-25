@@ -1,13 +1,15 @@
 (function($) {
-	// canvas object
+	// Resize an object to fit the window
 	$.fn.liquidLayout = function() {
 		this.attr({
 			width : window.innerWidth - 6,
 			height : window.innerHeight - 6
 		});
+		return this;
 	};
 
-	// select text object
+	// Allows text to be selectable with a single click
+	// eg. email address, full name, description
 	$.fn.selectText = function() {
 	    if ($.browser.msie) {
 	        var range = document.body.createTextRange();
@@ -29,32 +31,25 @@
 	};
 	
 	$(window).resize(function() {
-		$('#canvas').liquidLayout();
-		$('#canvas').polaroidStack('resize');
+		$('#polaroid-previewer').liquidLayout().polaroidStack('resize');
 	});
 
 	$(document).ready(function() {
-		$('#canvas').liquidLayout();
-		$('#canvas').polaroidStack({
-			'sources' : sources,
-			'zoomPanel' : $('#zoomPolaroid'),
-			'infoPanel' : $('#infoPolaroid'),
+		$('#polaroid-previewer').liquidLayout().polaroidStack(sources, {
 			'oneClickSelect' : '.selectableField',
 			'sortOrder' : $('#sort-order'),
 			'sortChaos' : $('#sort-chaos')
 		});
-	
+
 		// these should probably be encapsulated in a search plugin
 		$('#search-field').attr('value','');
 		$('#search-field').bind('keyup.search', function(event) {
-			$('#canvas').polaroidStack('search', event.target.value);
-			$('#search-cancel').css('background-image','url(images/search-cancel.png)');
-			$('#search-cancel').css('cursor','pointer');
+			$('#polaroid-previewer').polaroidStack('search', event.target.value);
+			$('#search-cancel').removeClass('disabled');
 			$('#search-cancel').bind('mouseup.searchCancel', function(event) {
 				$('#search-field').attr('value','');
-				$('#canvas').polaroidStack('showAll', event);
-				$('#search-cancel').css('background-image','url(images/search-end.png)');
-				$('#search-cancel').css('cursor','auto');
+				$('#polaroid-previewer').polaroidStack('showAll', event);
+				$('#search-cancel').addClass('disabled');
 				$('#search-cancel').unbind();
 			});
 		});
