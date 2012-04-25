@@ -96,12 +96,20 @@ var Polaroid = {
 		this.settings.finishX = Math.floor(Math.random() * (maxRight - (180 + 20)));
 		this.settings.finishY = (Math.floor(Math.random() * (maxBottom - 250))) + 50;
 		this.setNewRotation();
+		if(this.isZoomed()) {
+			this.settings.startX = this.settings.finishX;
+			this.settings.startY = this.settings.finishY;
+		}
 	},
 	// define a new allocated location for this polaroid to finish an animation at
 	setNewAllocCoords : function(pointX, pointY) {
-		this.settings.finishX = pointX - (this.settings.width/2) - (this.settings.width/2);
-		this.settings.finishY = pointY - (this.settings.height/2) - (this.settings.height/2);
+		this.settings.finishX = pointX - (this.settings.startWidth/2) - (this.settings.startWidth/2);
+		this.settings.finishY = pointY - (this.settings.startHeight/2) - (this.settings.startHeight/2);
 		this.setNewRotation();
+		if(this.isZoomed()) {
+			this.settings.startX = this.settings.finishX;
+			this.settings.startY = this.settings.finishY;
+		}
 	},
 	// define a new rotation for this polaroid to finish an animation at
 	setNewRotation : function() {

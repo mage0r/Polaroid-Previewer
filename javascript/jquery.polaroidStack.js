@@ -230,6 +230,15 @@ if( typeof Object.create !== 'function') {
 		 */
 		resize : function() {
 			this.polaroidStack('setupZoomInfo');
+			
+			// if we've zoomedin make sure the zoomout will animate from the revised coords
+			if((settings.target >= 0) && settings.polaroids[settings.target].isZoomed()) {
+				settings.zoomX = (window.innerWidth / 2) - (settings.polaroids[settings.target].settings.startWidth * settings.polaroids[settings.target].settings.zoom / 2) - 170;
+				settings.zoomY = (window.innerHeight / 2) + this.polaroidStack('getScrollOffset') - (settings.polaroids[settings.target].settings.startHeight * settings.polaroids[settings.target].settings.zoom / 2);
+				settings.polaroids[settings.target].settings.coordX = settings.zoomX;
+				settings.polaroids[settings.target].settings.coordY = settings.zoomY;
+			}
+
 			if(settings.sort == 'order') {
 				settings.sort = 'chaos';
 				this.polaroidStack('sortOrder');
@@ -254,6 +263,11 @@ if( typeof Object.create !== 'function') {
 			else {
 				this.polaroidStack('sortEventsSilence');
 
+				// must be able to uniquely identify the zoomed in polaroid after the sort
+				if((settings.target >= 0) && (settings.polaroids[settings.target].isZoomed())) {
+					settings.saveTarget = settings.polaroids[settings.target].getInfo('name');
+				}
+
 				// perform the sort
 				settings.polaroids.sort(function(a,b) {
 					if(a.getInfo(settings.categories)) {
@@ -264,16 +278,16 @@ if( typeof Object.create !== 'function') {
 					if(a.getInfo('name') > b.getInfo('name')) return 1;
 					return 0;
 				});
-
+				
 				// how many polaroids can fit across the width of the canvas?
-				var typesCount = Math.floor(this.width()/settings.polaroids[0].settings.width);
-				var spacingHorizontal = Math.floor((this.width()%(typesCount*settings.polaroids[0].settings.width))/(typesCount+1));
+				var typesCount = Math.floor(this.width()/settings.polaroids[0].settings.startWidth);
+				var spacingHorizontal = Math.floor((this.width()%(typesCount*settings.polaroids[0].settings.startWidth))/(typesCount+1));
 				
 				// how tall does the canvas need to be to fit them all in?
 				var totalRows = Math.ceil(settings.polaroids.length / typesCount);
 				var paddingTop = 50;
 				var paddingBottom = 20;
-				var minHeight = (settings.polaroids[0].settings.height*totalRows)+paddingTop+paddingBottom;
+				var minHeight = (settings.polaroids[0].settings.startHeight*totalRows)+paddingTop+paddingBottom;
 
 				// increase the height of the canvas if necessary
 				if(minHeight > this.height()) {
@@ -283,10 +297,10 @@ if( typeof Object.create !== 'function') {
 					});
 
 					// recalculate to accommodate the scrollbar
-					typesCount = Math.floor(this.width()/settings.polaroids[0].settings.width);
-					spacingHorizontal = Math.floor((this.width()%(typesCount*settings.polaroids[0].settings.width))/(typesCount+1));
+					typesCount = Math.floor(this.width()/settings.polaroids[0].settings.startWidth);
+					spacingHorizontal = Math.floor((this.width()%(typesCount*settings.polaroids[0].settings.startWidth))/(typesCount+1));
 					totalRows = Math.ceil(settings.polaroids.length / typesCount);
-					minHeight = (settings.polaroids[0].settings.height*totalRows)+paddingTop+paddingBottom;
+					minHeight = (settings.polaroids[0].settings.startHeight*totalRows)+paddingTop+paddingBottom;
 					this.attr({
 						height : minHeight
 					});
@@ -300,7 +314,7 @@ if( typeof Object.create !== 'function') {
 						line++;
 						count=1;
 					}
-					settings.polaroids[person].setNewAllocCoords(((settings.polaroids[0].settings.width+spacingHorizontal)*count)+5, (settings.polaroids[0].settings.height*line)+paddingTop);
+					settings.polaroids[person].setNewAllocCoords(((settings.polaroids[person].settings.startWidth+spacingHorizontal)*count)+5, (settings.polaroids[person].settings.startHeight*line)+paddingTop);
 					count++;
 				}
 				settings.sort = 'order';
@@ -354,6 +368,15 @@ if( typeof Object.create !== 'function') {
 						$('#'+this.id).polaroidStack('hover', event);
 					});
 					this.polaroidStack('sortEventsEnable');
+				}
+				// get the new target ID
+				if(settings.saveTarget) {
+					for(var person in settings.polaroids) {
+						if(settings.polaroids[person].getInfo('name') == settings.saveTarget) {
+							settings.target = this.polaroidStack('reorder', person);
+						}
+					}
+					delete settings.saveTarget;
 				}
 			}
 		},
@@ -427,14 +450,15 @@ if( typeof Object.create !== 'function') {
 			this.unbind('mousedown.infoOut');
 			$(settings.oneClickSelect).unbind('click');
 
-			// close the info panels and clean up
 			settings.polaroids[settings.target].setZoomed(false);
+			settings.zoomFrame = 0;
+
+			// close the info panels and clean up
 			var ctx = this[0].getContext('2d');
 			settings.polaroids[settings.target].draw(false, ctx);
 			settings.infoPanel.hide();
 			settings.zoomPanel.hide();
 
-			settings.zoomFrame = 0;
 			settings.zoomID = setInterval((function(self) {
 				return function() {
 					self.polaroidStack('zoomOut');
