@@ -65,11 +65,20 @@ if( typeof Object.create !== 'function') {
 		setupZoomInfo : function() {
 			// setup the info panel where extra information about a polariod will display
 			settings.infoPanel.css('left', (window.innerWidth / 2) - settings.infoPanel.width() / 2 + 260 - 170);
-			settings.infoPanel.css('top', (window.innerHeight / 2) + $('body').scrollTop() - (settings.infoPanel.height() / 2) - 10);
+			settings.infoPanel.css('top', (window.innerHeight / 2) + this.polaroidStack('getScrollOffset') - (settings.infoPanel.height() / 2) - 10);
 
 			// setup the canvas where a zoomed polaroid will display
 			settings.zoomPanel.css('left', (window.innerWidth / 2) - settings.zoomPanel.width() / 2 - 10 - 170);
-			settings.zoomPanel.css('top', (window.innerHeight / 2) + $('body').scrollTop() - (settings.zoomPanel.height() / 2));
+			settings.zoomPanel.css('top', (window.innerHeight / 2) + this.polaroidStack('getScrollOffset') - (settings.zoomPanel.height() / 2));
+		},
+		/*
+		 * IE9 & FF likes html, Chrome likes body. Go figure.
+		 */
+		getScrollOffset : function() {
+			if($('html').scrollTop() > $('body').scrollTop()) {
+				return $('html').scrollTop();
+			}
+			return $('body').scrollTop();
 		},
 		/*
 		 * Look throught the stack and workout if any polaroid overlaps a point on the canvas
@@ -361,7 +370,7 @@ if( typeof Object.create !== 'function') {
 			settings.polaroids[settings.target].setStart();
 
 			settings.zoomX = (window.innerWidth / 2) - (settings.polaroids[settings.target].settings.startWidth * settings.polaroids[settings.target].settings.zoom / 2) - 170;
-			settings.zoomY = (window.innerHeight / 2) + $('body').scrollTop() - (settings.polaroids[settings.target].settings.startHeight * settings.polaroids[settings.target].settings.zoom / 2);
+			settings.zoomY = (window.innerHeight / 2) + this.polaroidStack('getScrollOffset') - (settings.polaroids[settings.target].settings.startHeight * settings.polaroids[settings.target].settings.zoom / 2);
 			settings.zoomFrame = 0;
 			settings.zoomID = setInterval((function(self) {
 				return function() {

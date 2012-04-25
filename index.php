@@ -8,8 +8,8 @@ include('model/PolaroidDetails.php');
 
 // To connect to LDAP simply replace the below line with this and include the ldap connection details:
 // $polaroids = new PolaroidDetails(array('polaroids'), new LDAPAuth('ldap://ldap.hostname/', 'ou=foo,dc=bar,dc=com', true, false));
-//$polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'polaroids')); 
-$polaroids = new PolaroidDetails(array('melbourne','kl'), new DBAuth('localhost', 'polaroids')); 
+$polaroids = new PolaroidDetails(array('polaroids'), new DBAuth('localhost', 'polaroids')); 
+//$polaroids = new PolaroidDetails(array('melbourne','kl'), new DBAuth('localhost', 'polaroids')); 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
