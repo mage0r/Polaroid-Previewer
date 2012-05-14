@@ -13,6 +13,9 @@
  *   Connecting to a server isn't critical, it'll work if a connection cannot be
  *   established. Just means the details are a little sparse.
  */
+include('model/LDAPAuth.php');
+include('model/DBAuth.php');
+ 
 class PolaroidDetails {
 	private $paths = array();
 	private $names = array();

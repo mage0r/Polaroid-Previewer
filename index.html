@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Polaroid Previewer</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0"/>
+	<link rel="stylesheet" href="styles/reset.css" type="text/css"/>
+	<link rel="stylesheet" href="styles/core.css" media="screen"/> 
+	<script type="text/javascript" src="polaroids.sources.php"></script>
+	<script type="text/javascript" src="javascript/jquery.min.js"></script>
+	<script type="text/javascript" src="javascript/jquery.font.js"></script>
+	<script type="text/javascript" src="javascript/Polaroid.js"></script>
+	<script type="text/javascript" src="javascript/jquery.polaroidStack.js"></script>
+	<script type="text/javascript" src="javascript/jquery.cookie.js"></script>
+	<script type="text/javascript" src="javascript/setup.polaroids.js"></script>
+</head>
+
+<body>
+	<canvas id="polaroid-previewer">
+		<br/><br/><br/>
+		Sorry, your browser does not support <strong>HTML5 Canvas</strong>.<br/><br/>
+		Works best in the latest browsers<br/>
+		<strong>Internet Explorer 9</strong>, <strong>Firefox 6</strong> and <strong>Chrome 13</strong>.<br/><br/>
+		If you can't dance on the cutting edge in your spare time, when	can you?<br/><br/>
+	</canvas>
+	<div id="header">
+		<div id="intro">
+			<strong>Polaroid Previewer v1.2</strong>
+		</div>
+		<div id="sort">
+			<button id="sort-order">Order</button>
+			<button id="sort-chaos" class="selected">Chaos</button>
+		</div>
+		<div id="search">
+			<span id="search-icon"></span>
+			<input id="search-field" type="text"/>
+			<span id="search-cancel" class="disabled"></span>
+		</div>
+	</div>
+	<div id="footer">
+		A <a href="http://github.com/chixor/Polaroid-Previewer">GitHub</a> project. Photos courtesy of <a href="http://www.sxc.hu/">http://www.sxc.hu/</a>
+	</div>
+</body>
+</html>

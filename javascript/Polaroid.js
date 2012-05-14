@@ -9,7 +9,6 @@ var Polaroid = {
 			'coordX' : Math.floor(Math.random() * (width - (180 + 20))),
 			'coordY' : (Math.floor(Math.random() * (height - 250))) + 50,
 			'rotation' : Math.floor(Math.random() * 8) - 4,
-			// original w:160, h:172
 			'width' : 180,
 			'height' : 194,
 			'image' : null,
@@ -19,7 +18,11 @@ var Polaroid = {
 			'zoom' : 2.5,
 			'imagedrawn' : false,
 			'usingCookies' : true,
-			'source' : null
+			'source' : null,
+			// Fonts to use in fallback order. 
+			// Marker is iOS, Bradley is Mac, Segoe is PC, Verdana is everywhere 
+			'fontFamilies' : ['Bradley Hand ITC TT', 'Marker Felt', 'Segoe Print', 'Verdana'],
+			'fontSizes' : [3,3,0,0]
 		};
 		this.settings = $.extend(this.settings, options);
 		this.settings.height = Math.round(this.settings.width * 1.075);
@@ -47,7 +50,8 @@ var Polaroid = {
 			'padding' : 0
 		};
 		this.ratios.padding = Math.round((this.settings.width - (this.settings.width * this.ratios.width)) / 2);
-		
+
+		this.setFont();
 		this.setStart();
 		this.setCache();
 	},
@@ -83,6 +87,18 @@ var Polaroid = {
 			return true;
 		}
 		return false;
+	},
+	// Determine which font to use based on what's available in the local environment.
+	// Unfortunately we don't have css style font fallback when drawing on HTML5 Canvas so we'll just have to make do.
+	setFont : function() {
+		// prepare the font detection suite
+		font.setup();
+		for(var x=this.settings.fontFamilies.length-1; x>=0; x--) {
+			if(font.isInstalled(this.settings.fontFamilies[x])) {
+				this.settings.fontFamily = this.settings.fontFamilies[x];
+				this.settings.fontSize = this.settings.fontSizes[x];
+			}
+		}
 	},
 	// we need to remember the original size/location of the polaroid before it gets zoomed
 	setStart : function() {
@@ -270,7 +286,7 @@ var Polaroid = {
 		}
 
 		if(target && (this.settings.startWidth == this.settings.width)) {
-			ctx.font = "8pt Segoe Print";
+			ctx.font = (8+this.settings.fontSize)+"pt "+this.settings.fontFamily;
 			ctx.fillStyle = "#000000";
 			ctx.fillText('>info', this.settings.width - this.ratios.padding - this.ratios.padding - 13, this.ratios.padding);
 		}
@@ -314,7 +330,7 @@ var Polaroid = {
 		}
 		
 		// Create the annotation - calibri font might be more cross platform compatible
-		ctx.font = (this.settings.width * this.ratios.textSize) + "pt Segoe Print";
+		ctx.font = ((this.settings.width * this.ratios.textSize) + this.settings.fontSize) + "pt "+this.settings.fontFamily;
 		ctx.fillStyle = "#2d2dd4";
 		ctx.fillText(this.settings.source.name, this.ratios.padding, Math.round(this.settings.height * this.ratios.textToHeight));
 

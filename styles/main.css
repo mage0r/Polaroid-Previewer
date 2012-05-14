@@ -48,6 +48,7 @@ a {
 #sort {
 	position: relative;
 	top: -11px;
+	text-align: center;
 }
 #sort-order, #sort-chaos {
 	border: 0;
