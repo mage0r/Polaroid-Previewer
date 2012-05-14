@@ -1,5 +1,7 @@
 # Polaroid Previewer #
 
+Online demo available at [chixor.net/demo/polaroid-previewer/](http://chixor.net/demo/polaroid-previewer/)
+
 ## Add/Remove ##
 The system uses the photos in polaroids directory as the primary record. To add or remove a photo, you can simply add or remove it from the image directory.
 
