@@ -10,17 +10,20 @@ var Polaroid = {
 			'coordY' : (Math.floor(Math.random() * (height - 250))) + 50,
 			'rotation' : Math.floor(Math.random() * 8) - 4,
 			'width' : 180,
-			'height' : 194,
+			// height is calculated at initialize
+			'height' : null,
 			'image' : null,
-			'fileFormat' : 'jpg',
 			'display' : true,
 			'fade' : 1,
 			'zoom' : 2.5,
 			'imagedrawn' : false,
 			'usingCookies' : true,
 			'source' : null,
+			'showLocation' : false,
+			'showExtension' : false,
+			'showName' : false,
 			// Fonts to use in fallback order. 
-			// Marker is iOS, Bradley is Mac, Segoe is PC, Verdana is everywhere 
+			// Bradley is Mac, Marker is iOS, Segoe is PC, Verdana is everywhere 
 			'fontFamilies' : ['Bradley Hand ITC TT', 'Marker Felt', 'Segoe Print', 'Verdana'],
 			'fontSizes' : [3,3,0,0]
 		};
@@ -29,7 +32,7 @@ var Polaroid = {
 
 		// start downloading the photo for this polaroid
 		this.settings.image = new Image();
-		this.settings.image.src = this.settings.source.location + '/' + this.settings.source.name + '.' + this.settings.fileFormat;
+		this.settings.image.src = this.settings.source.location + '/' + this.settings.source.name + '.' + this.settings.source.extension;
 
 		// If cookies have been set, retrieve them
 		if(this.getCookie('x')) {
@@ -40,20 +43,25 @@ var Polaroid = {
 		}
 
 		// We need to know exactly how to draw the polaroid no matter what scale it renders at
-		// Hence the use of ratios based on the width and height that was passed in
+		// Hence the use of ratios for objects inside the polaroid relative to the width and height that was passed in
 		this.ratios = {
-			'width' : 0.843,
-			'height' : 0.709,
-			'widthToHeight' : 1.107,
-			'textToHeight' : 0.909,
-			'textSize' : 0.06,
-			'padding' : 0
+			'width' : 0.91,
+			'height' : 0.75,
+			'textSize' : 0.08
 		};
 		this.ratios.padding = Math.round((this.settings.width - (this.settings.width * this.ratios.width)) / 2);
+		this.ratios.widthToHeightRatio = (this.settings.width * this.ratios.width) / (this.settings.height * this.ratios.height);
+		this.ratios.heightToWidthRatio = (this.settings.height * this.ratios.height) / (this.settings.width * this.ratios.width);
 
 		this.setFont();
 		this.setStart();
 		this.setCache();
+	},
+	getWidth : function() {
+		return this.settings.width;
+	},
+	getHeight : function() {
+		return this.settings.height;
 	},
 	// check the polaroid isn't hidden
 	isVisible : function() {
@@ -64,6 +72,12 @@ var Polaroid = {
 	},
 	isZoomed : function(state) {
 		return this.settings.zoomed;
+	},
+	setZooming : function(state) {
+		this.settings.zooming = state;
+	},
+	isZooming : function(state) {
+		return this.settings.zooming;
 	},
 	// check if we've rendered at this point
 	isTarget : function(pointX, offsetX, pointY, offsetY) {
@@ -79,11 +93,10 @@ var Polaroid = {
 	},
 	// check if the info button is rendered at this point
 	isInfo : function(pointX, offsetX, pointY, offsetY) {
-		// 148 and 138 is highly specific to the default width. Will break on any other width, needs to be more dynamic.
-		if(pointX < this.settings.coordX + 148 + offsetX + 20 
-		&& pointX > this.settings.coordX + 138 + offsetX - 3 
-		&& pointY < this.settings.coordY + offsetY + 15 
-		&& pointY > this.settings.coordY + offsetY - 3) {
+		if(pointX < this.settings.coordX + offsetX + this.settings.width - this.ratios.padding 
+		&& pointX > this.settings.coordX + offsetX + this.ratios.padding 
+		&& pointY < this.settings.coordY + offsetY + (this.settings.height * this.ratios.height) + this.ratios.padding
+		&& pointY > this.settings.coordY + offsetY + this.ratios.padding) {
 			return true;
 		}
 		return false;
@@ -107,6 +120,10 @@ var Polaroid = {
 		this.settings.startX = this.settings.coordX;
 		this.settings.startY = this.settings.coordY;
 	},
+	setStartMouse : function(x,y) {
+		this.settings.startMX = x;
+		this.settings.startMY = y;
+	},
 	// define a new random location for this polaroid to finish an animation at
 	setNewRandomCoords : function(maxRight, maxBottom) {
 		this.settings.finishX = Math.floor(Math.random() * (maxRight - (180 + 20)));
@@ -126,6 +143,11 @@ var Polaroid = {
 			this.settings.startX = this.settings.finishX;
 			this.settings.startY = this.settings.finishY;
 		}
+	},
+	// define new coordinates for this polaroid to load into immedietally
+	setNewCoords : function(pointX, pointY) {
+		this.settings.coordX = pointX - (this.settings.startWidth/2) - (this.settings.startWidth/2);
+		this.settings.coordY = pointY - (this.settings.startHeight/2) - (this.settings.startHeight/2);
 	},
 	// define a new rotation for this polaroid to finish an animation at
 	setNewRotation : function() {
@@ -169,6 +191,18 @@ var Polaroid = {
 		}
 		return this.settings.source;
 	},
+	formatInfo : function() {
+		var contents = '';
+		for(var output in this.settings.source) {
+			if((this.settings.showLocation || (!this.settings.showLocation && output != 'location'))
+			&& (this.settings.showExtension || (!this.settings.showExtension && output != 'extension'))
+			&& (this.settings.showName || (!this.settings.showName && output != 'name'))
+			) {
+				contents += "<p><span class=\"title\" id=\""+output+"_title\">"+output.substr(0,1).toUpperCase()+output.substr(1,output.length).replace('_',' ')+"</span> <span id=\""+output+"\" class=\"selectableField\">"+this.settings.source[output]+"</span></p>";
+			}
+		}
+		return contents;
+	},
 	searchInfo : function(string) {
 		for(var detail in this.settings.source) {
 			if(this.settings.source[detail].toLowerCase().match(string)) {
@@ -181,11 +215,8 @@ var Polaroid = {
 		this.settings.display = display;
 	},
 	move : function(pointX, offsetX, pointY, offsetY) {
-		this.settings.coordX = pointX - offsetX - this.settings.width / 2;
-		this.settings.coordY = pointY - offsetY - this.settings.height / 2;
-
-		// save the new location so we can return to it after another operation, eg. zoom
-		this.setStart();
+		this.settings.coordX = pointX - offsetX - (this.settings.startMX - this.settings.startX);
+		this.settings.coordY = pointY - offsetY - (this.settings.startMY - this.settings.startY);
 	},
 	rotate : function() {
 		this.settings.rotation = this.rotateRandom();
@@ -285,10 +316,19 @@ var Polaroid = {
 			}
 		}
 
-		if(target && (this.settings.startWidth == this.settings.width)) {
-			ctx.font = (8+this.settings.fontSize)+"pt "+this.settings.fontFamily;
-			ctx.fillStyle = "#000000";
-			ctx.fillText('>info', this.settings.width - this.ratios.padding - this.ratios.padding - 13, this.ratios.padding);
+		if(target && !this.isZooming()) {
+			ctx.fillStyle = 'rgba(0,0,0,0.7)';
+			ctx.fillRect(this.ratios.padding+1, this.ratios.padding+1, Math.round(this.settings.width * this.ratios.width), Math.round(this.settings.height * this.ratios.height));
+
+			// magnifying glass icon
+			ctx.beginPath();
+			ctx.arc(this.settings.width/2,(this.settings.height*this.ratios.height/2)+this.ratios.padding-4,10,20,Math.PI*2,true);
+			ctx.strokeStyle = "#cccccc";
+			ctx.lineWidth = 3.5;
+			ctx.stroke();
+			ctx.lineTo(this.settings.width/2+10,(this.settings.height*this.ratios.height/2)+this.ratios.padding+16);
+			ctx.stroke();
+			ctx.closePath();
 		}
 
 		ctx.restore();
@@ -324,15 +364,30 @@ var Polaroid = {
 
 		// Create the polaroid photo
 		if(this.settings.image && this.settings.image.complete) {
+			var cropHeight = this.settings.image.height-1; // -1px to correct for an iphone safari bug
+			var cropWidth = this.settings.image.width;
+			var cropXOffset = 0;
+
+			// If the image is more landscaped than the polaroid viewport, center it horizontally and crop left and right edges
+			if(this.ratios.widthToHeightRatio <= this.settings.image.width / this.settings.image.height) {
+				cropWidth = this.settings.image.height * this.ratios.widthToHeightRatio;
+				cropXOffset = (this.settings.image.width - this.settings.image.height * this.ratios.widthToHeightRatio) / 2;
+			}
+			// If the image is more portrait than the polariod, increase the height enough so the width will fit and align to the top
+			else {
+				cropHeight = cropWidth * this.ratios.heightToWidthRatio;
+			}
+
 			// Have to crop whatever the original scale and ratio was to fit without distorting the image
 			// This has problems when the original photo is vertical rather than horizontal
-			ctx.drawImage(this.settings.image, Math.round((this.settings.image.width - this.settings.image.height * this.ratios.widthToHeight) / 2), 0, Math.round(this.settings.image.height * this.ratios.widthToHeight), this.settings.image.height, this.ratios.padding, this.ratios.padding, Math.round(this.settings.width * this.ratios.width), Math.round(this.settings.height * this.ratios.height));
+			ctx.drawImage(this.settings.image,cropXOffset,0,cropWidth,cropHeight,this.ratios.padding,this.ratios.padding,this.settings.width * this.ratios.width,this.settings.height * this.ratios.height);
 		}
 		
-		// Create the annotation - calibri font might be more cross platform compatible
-		ctx.font = ((this.settings.width * this.ratios.textSize) + this.settings.fontSize) + "pt "+this.settings.fontFamily;
+		// Create the annotation
+		ctx.font = ((this.settings.width * this.ratios.textSize) + this.settings.fontSize) + "px "+this.settings.fontFamily;
 		ctx.fillStyle = "#2d2dd4";
-		ctx.fillText(this.settings.source.name, this.ratios.padding, Math.round(this.settings.height * this.ratios.textToHeight));
+		// Place the annotation in the center of the blank space left over below the image
+		ctx.fillText(this.settings.source.name, this.ratios.padding, this.settings.height - ((this.settings.height - (this.settings.height*this.ratios.height) + (this.ratios.padding*2)) / 2.2) + ((this.settings.width * this.ratios.textSize) + this.settings.fontSize));
 
 		ctx.restore();
 	},

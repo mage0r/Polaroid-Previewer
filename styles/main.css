@@ -23,7 +23,7 @@ a {
 	height: 22px;
 }
 #intro, #footer, #polaroidStack-polaroidInfo .title {
-	font-family: 'Segoe Print', 'Bradley Hand ITC TT';
+	font-family: 'Segoe Print', 'Bradley Hand ITC TT', 'Marker Felt', 'Verdana', sans-serif;
 }
 #intro {
 	position: absolute;
@@ -137,7 +137,6 @@ a {
 	line-height: 1.5;
 	background: transparent url('../images/info-bg.png') 0 0 repeat;
 	width: 300px;
-	height: 360px;
 	padding: 20px 20px 20px 140px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;

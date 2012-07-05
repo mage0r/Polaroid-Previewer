@@ -32,10 +32,10 @@ class PolaroidDetails {
 		foreach($this->paths as $path) {
 			if ($handle = opendir($path)) {
 				while (false !== ($file = readdir($handle))) {
-					if(strstr($file, '.jpg')) {
-						$name = str_replace('.jpg','',$file);
-						$this->names[$name] = array();
-						$this->names[$name]['location'] = $path;
+					if(preg_match('/(.*)\.(jpg|jpeg|gif|png)$/i', $file, $matches)) {
+						$this->names[$matches[1]] = array();
+						$this->names[$matches[1]]['location'] = $path;
+						$this->names[$matches[1]]['extension'] = $matches[2];
 					}
 				}
 			}

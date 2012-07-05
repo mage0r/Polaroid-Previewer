@@ -2,8 +2,8 @@
 	// Resize an object to fit the window
 	$.fn.liquidLayout = function() {
 		this.attr({
-			width : window.innerWidth - 6,
-			height : window.innerHeight - 6
+			width : window.innerWidth - 3,
+			height : window.innerHeight - 3
 		});
 		return this;
 	};
@@ -31,7 +31,10 @@
 	};
 	
 	$(window).resize(function() {
-		$('#polaroid-previewer').liquidLayout().polaroidStack('resize');
+		// safari on iphone wrongly triggers a window resize event when the content gets too wide
+		if(!$('#polaroid-previewer').polaroidStack('isTouchDevice')) {
+			$('#polaroid-previewer').liquidLayout().polaroidStack('resize');
+		}
 	});
 
 	$(document).ready(function() {
@@ -40,6 +43,10 @@
 			'sortOrder' : $('#sort-order'),
 			'sortChaos' : $('#sort-chaos')
 		});
+		// scroll past the address bar on mobile devices. Regex for 'mobi' because opera for mobile uses this truncation
+		/mobi/i.test(navigator.userAgent) && !location.hash && setTimeout(function () {
+			if (!pageYOffset) window.scrollTo(0, 0);
+		}, 1000);
 
 		// these should probably be encapsulated in a search plugin
 		$('#search-field').attr('value','');

@@ -16,3 +16,9 @@ input {
     border-radius: 0;
     padding: 1px;
 }
+
+/* increase font size on the info panel */
+#polaroidStack-polaroidInfo {
+	font-size: 1.2em;
+	width: 400px;
+}
