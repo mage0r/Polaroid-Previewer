@@ -1,7 +1,12 @@
 # Polaroid Previewer #
 
 ![Polaroid Previewer Screenshot v1.2](http://chixor.net/demo/polaroid-previewer/polaroid-previewer.png)
-Online demo available at [chixor.net/demo/polaroid-previewer/](http://chixor.net/demo/polaroid-previewer/)
+
+* Display photos from a directory in HTML5 Canvas.
+* Option for user to place photos in a random mess overlapping each other or in order.
+* Allow user to move photos around the screen and zoom in.
+* Built with jQuery and CSS3.
+* Online demo available at [chixor.net/demo/polaroid-previewer/](http://chixor.net/demo/polaroid-previewer/)
 
 ## Add/Remove ##
 
