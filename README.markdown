@@ -1,5 +1,6 @@
 # Polaroid Previewer #
 
+![Polaroid Previewer Screenshot v1.2](http://chixor.net/demo/polaroid-previewer/polaroid-previewer.png)
 Online demo available at [chixor.net/demo/polaroid-previewer/](http://chixor.net/demo/polaroid-previewer/)
 
 ## Add/Remove ##
