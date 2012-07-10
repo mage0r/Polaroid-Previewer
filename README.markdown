@@ -32,7 +32,7 @@ Checkout the examples in /demo.html to see how Polaroid Previewer is initialized
 Aside from the required name, location and extension fields you can pass in as many extra fields as you like for display on zoom:
 
 	$('#myCanvas').polaroidStack({
-		'sources' : [
+		'sources' : [{
 			name: "MyPhotoFilename", 
 			location: "polaroids", 
 			extension: "jpg", 
