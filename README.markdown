@@ -19,6 +19,28 @@ If you want to use a different directory or even multiple directories, go to the
 	/settings.inc.php
 	$polaroidDirectory = array('a_different_directory','another_directory','../foo_bar');
 
+### Don't want to use PHP? ###
+Checkout the examples in /demo.html to see how Polaroid Previewer is initialized by just an array of variables. The minimum:
+
+	$('#foobar').polaroidStack({
+		'sources' : [
+			{name: "MyPhotoFilename", location: "polaroids", extension: "jpg"},
+			{name: "MySecondPhotoFilename", location: "polaroids", extension: "png"}
+		]
+	});
+
+Aside from the required name, location and extension fields you can pass in as many extra fields as you like for display on zoom:
+
+	$('#foobar').polaroidStack({
+		'sources' : [
+			name: "MyPhotoFilename", 
+			location: "polaroids", 
+			extension: "jpg", 
+			custom_field_1: "It's a lovely photo.", 
+			custom_field_2: "I took it years ago."
+		}]
+	});
+
 ## Info Fields ##
 There's currently two ways to populate the information panel that slides out when you click the magnifying glass icon on each polaroid:
 
