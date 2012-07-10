@@ -468,7 +468,7 @@
 			if((this.element.height() != this.options.originalHeight) && (this.options.originalHeight != null)) {
 				this.element.attr({
 					width : this.options.originalWidth,
-					height : this.options.originalHeight
+					height : this.options.originalHeight - parseInt(this.element.css('margin-top')) - parseInt(this.element.css('padding-top')) - parseInt(this.element.css('margin-bottom')) - parseInt(this.element.css('padding-bottom'))
 				});
 				this.options.originalWidth = null;
 				this.options.originalHeight = null;
