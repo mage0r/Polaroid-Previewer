@@ -26,5 +26,4 @@ ini_set('display_errors','off');
 
 $polaroids = new PolaroidDetails($polaroidDirectory, $polaroidRepository); 
 ?>
-var sources = [];
 <?=$polaroids->drawJavascriptObjects();?>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Polaroid Previewer</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<script type="text/javascript" src="javascript/jquery.min.js"></script>
+	<script type="text/javascript" src="javascript/jquery.simple-inheritance.js"></script>
+	<script type="text/javascript" src="javascript/jquery.polaroid.js"></script>
+	<script type="text/javascript" src="javascript/jquery.polaroidStack.js"></script>
+	<style type="text/css">
+	body, body a {
+		background-color: #303030;
+		color: white;
+		font-family: Arial, sans-serif;
+	}
+	
+	.polaroidStack {
+		border: 3px solid #999999;
+	}
+	
+	.polaroidStack-polaroidInfo .title {
+		font-family: 'Segoe Print', 'Bradley Hand ITC TT', 'Marker Felt', 'Verdana', sans-serif;
+	}
+	
+	.polaroidStack-polaroidInfo, .polaroidStack-polaroidZoom {
+		position: absolute;
+		display: none;
+	}
+	.polaroidStack-polaroidInfo {
+		font-size: 0.9em;
+		line-height: 1.5;
+		background: transparent url('images/info-bg.png') 0 0 repeat;
+		width: 300px;
+		padding: 20px 20px 20px 140px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+	}
+	.polaroidStack-polaroidInfo .title {
+		display: block;
+		float: left;
+		width: 90px;
+		font-weight: bold;
+	}		
+	</style>
+</head>
+
+<body>
+	<a href="http://github.com/chixor/Polaroid-Previewer"><strong>Polaroid Previewer v1.6</strong></a><br/>
+	Photos courtesy of <a href="http://www.sxc.hu/">http://www.sxc.hu/</a><br/><br/>
+	<canvas id="pp-basic-chaos" class="polaroidStack" width="600" height="600"></canvas>
+	<script type="text/javascript">
+	//<!--
+	$('#pp-basic-chaos').polaroidStack({
+		'sources' : [
+			{name: "Daisies", location: "polaroids", extension: "jpg", type: "Purple", latin_name: "Dellis hortensis", description: "The name means affection."},
+			{name: "Tulips", location: "polaroids", extension: "jpg", type: "Red", latin_name: "Tulipia", description: "The name means declaration of love."},
+			{name: "Iris", location: "polaroids", extension: "jpg", type: "Purple", description: "The name means message."},
+			{name: "Dahlia", location: "polaroids", extension: "jpg", type: "Red", description: "The name means novelty"},
+			{name: "Cherry Blossoms", location: "polaroids", extension: "jpg", type: "Pink", description: "Oh I love these flowers. They always herald the coming of spring."},
+			{name: "Orange Lily", location: "polaroids", extension: "jpg", type: "Orange", latin_name: "Lilium", description: "The name means majesty."}
+		]
+	});
+	//-->
+	</script>
+
+	<div id="sort">
+		<button id="sort-order">Order</button>
+		<button id="sort-chaos" class="selected">Chaos</button>
+		<select id="pp-basic-order-style" onchange="$('#pp-basic-order').polaroidStack('setStyle', $('#'+this.id+' :selected').val());">
+			<option>ClassicPolaroid</option>
+			<option selected="selected">MinLandscape</option>
+			<option>MinPortrait</option>
+		</select>
+	</div>
+	<canvas id="pp-basic-order" class="polaroidStack" width="600" height="600"></canvas>
+	<script type="text/javascript">
+	//<!--
+	$('#pp-basic-order').polaroidStack({
+		'sources' : [
+			{name: "Daisies", location: "polaroids", extension: "jpg", type: "Purple", latin_name: "Dellis hortensis", description: "The name means affection."},
+			{name: "Tulips", location: "polaroids", extension: "jpg", type: "Red", latin_name: "Tulipia", description: "The name means declaration of love."},
+			{name: "Iris", location: "polaroids", extension: "jpg", type: "Purple", description: "The name means message."},
+			{name: "Dahlia", location: "polaroids", extension: "jpg", type: "Red", description: "The name means novelty"},
+			{name: "Cherry Blossoms", location: "polaroids", extension: "jpg", type: "Pink", description: "Oh I love these flowers. They always herald the coming of spring."},
+			{name: "Orange Lily", location: "polaroids", extension: "jpg", type: "Orange", latin_name: "Lilium", description: "The name means majesty."}
+		], 
+		'sortOrder' : $('#sort-order'),
+		'sortChaos' : $('#sort-chaos'),
+		'sort' : 'order',
+		'style' : 'MinLandscape',
+		'displayDebug' : true
+	});
+	//-->
+	</script>
+	
+	<canvas id="pp-basic-custom" class="polaroidStack" width="600" height="600"></canvas>
+	<script type="text/javascript">
+	//<!--
+	$('#pp-basic-custom').polaroidStack({
+		'sources' : [
+			{name: "Daisies", location: "polaroids", extension: "jpg", type: "Purple", latin_name: "Dellis hortensis", description: "The name means affection."},
+			{name: "Tulips", location: "polaroids", extension: "jpg", type: "Red", latin_name: "Tulipia", description: "The name means declaration of love."},
+			{name: "Iris", location: "polaroids", extension: "jpg", type: "Purple", description: "The name means message."},
+			{name: "Dahlia", location: "polaroids", extension: "jpg", type: "Red", description: "The name means novelty"},
+		], 
+		'sort' : 'order',
+		'annotate' : false
+	});
+	//-->
+	</script>
+</body>
+</html>

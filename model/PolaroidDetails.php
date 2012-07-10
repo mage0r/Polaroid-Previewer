@@ -60,9 +60,9 @@ class PolaroidDetails {
 	 */
 	public function drawJavascriptObjects() {
 		$count = 0;
-		$output = '';
+		$output = "var sources = [\n";
 		foreach($this->names as $name=>$arr) {
-			$output .= "sources[$count] = {";
+			$output .= "\t{";
 			$output .= "name: \"$name\"";
 			if(strlen($name) > 0) {
 				foreach($this->names[$name] as $key=>$val) {
@@ -72,8 +72,8 @@ class PolaroidDetails {
 				}
 			}
 			$count++;
-			$output .= "};\n";
+			$output .= "},\n";
 		}
-		return $output;
+		return $output.'];';
 	}
 }

@@ -16,8 +16,8 @@ To quickly and easily see your images in Polaroid Previewer make sure the demo c
 ### Don't want to use polaroids/ directory? ###
 If you want to use a different directory or even multiple directories, go to the settings php file and update the directory array:
 
-  /settings.inc.php
-  $polaroidDirectory = array('a_different_directory','another_directory','../foo_bar');
+	/settings.inc.php
+	$polaroidDirectory = array('a_different_directory','another_directory','../foo_bar');
 
 ## Info Fields ##
 There's currently two ways to populate the information panel that slides out when you click the magnifying glass icon on each polaroid:
@@ -75,7 +75,7 @@ Order will always fall back to alphabetical by polaroid name if two polaroids ha
 ## Performance ##
 Works best in the latest browsers IE9, FF6, Chrome13. Surprisingly, in that order! Chrome doesn't like fading in each polaroid individually (not sure why) so it seems slow/unresponsive on first load. The more polaroids the longer it takes. May need to fix this or add a loading icon.
 
-It seems to run ok on Dual Core but chugs on slower processors (laptop). The biggest impact on performance is doing the HTML5 Canvas drawing, which unfortunately has to happen several times a second to respond to mouse movement (I will get to this in a sec). Some of the biggest performance offenders in HTML5 Canvas are:
+It seems to run ok on Dual Core but chugs on slower processors (laptop). The biggest impact on performance is doing the HTML5 Canvas drawing which only runs for animations. Some of the biggest performance offenders in HTML5 Canvas are:
 
 * Gradients
 * Drop shadows
@@ -86,4 +86,7 @@ It seems to run ok on Dual Core but chugs on slower processors (laptop). The big
 
 I've implemented caching on the polaroids. This works by drawing the polaroid on a hidden canvas once then drawing that image onto the primary canvas every redraw. This has significantly improved the performance, however it could do with more tweaking. Currently it still performs the rotation post-cache, there's no reason why this couldn't be cached as well, it'll just be a bit fiddly to implement.
 
-The redraw happens on a setInterval (ie, constantly). However the actual interface changes only happen on mouse events. So in theory you could add a performance boost by removing the generic setInterval and only run it in the mouse events, however this would only improve performance when the user isn't doing anything.
+###Mobile###
+The zoom animation is decidedly slow on iphone from version 1.6. This is because the zoom animation no longer happens on the primary canvas, it happens on the zoom canvas which needs to also change css values as it zooms.
+
+This change was necessary for zooming on small canvases on desktop. More experiments need to be made for performance to be improved on iphone. An alternative might be to make the zoom canvas fill the screen so css changes only happen on initialize.

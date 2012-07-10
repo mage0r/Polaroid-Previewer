@@ -22,7 +22,7 @@ a {
 	width:100%;
 	height: 22px;
 }
-#intro, #footer, #polaroidStack-polaroidInfo .title {
+#intro, #footer, .polaroidStack-polaroidInfo .title {
 	font-family: 'Segoe Print', 'Bradley Hand ITC TT', 'Marker Felt', 'Verdana', sans-serif;
 }
 #intro {
@@ -127,12 +127,16 @@ a {
 }
 
 /* polaroid info styles */
+
+#polaroid-previewer {
+	margin-top: 40px;
+}
 	
-#polaroidStack-polaroidInfo, #polaroidStack-polaroidZoom {
+.polaroidStack-polaroidInfo, .polaroidStack-polaroidZoom {
 	position: absolute;
 	display: none;
 }
-#polaroidStack-polaroidInfo {
+.polaroidStack-polaroidInfo {
 	font-size: 0.9em;
 	line-height: 1.5;
 	background: transparent url('../images/info-bg.png') 0 0 repeat;
@@ -141,13 +145,9 @@ a {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 }
-#polaroidStack-polaroidInfo .title {
+.polaroidStack-polaroidInfo .title {
 	display: block;
 	float: left;
 	width: 90px;
 	font-weight: bold;
-}
-#polaroidStack-polaroidZoom {
-	width: 524px;
-	height: 560px;
 }
