@@ -22,7 +22,7 @@ If you want to use a different directory or even multiple directories, go to the
 ### Don't want to use PHP? ###
 Checkout the examples in /demo.html to see how Polaroid Previewer is initialized by just an array of variables. The minimum:
 
-	$('#foobar').polaroidStack({
+	$('#myCanvas').polaroidStack({
 		'sources' : [
 			{name: "MyPhotoFilename", location: "polaroids", extension: "jpg"},
 			{name: "MySecondPhotoFilename", location: "polaroids", extension: "png"}
@@ -31,7 +31,7 @@ Checkout the examples in /demo.html to see how Polaroid Previewer is initialized
 
 Aside from the required name, location and extension fields you can pass in as many extra fields as you like for display on zoom:
 
-	$('#foobar').polaroidStack({
+	$('#myCanvas').polaroidStack({
 		'sources' : [
 			name: "MyPhotoFilename", 
 			location: "polaroids", 
